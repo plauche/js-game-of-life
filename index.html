@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>game o life
+  
+  <script src="/home/chronos/u-f543002ac952471e123950afdbd954b9bb4416eb/Downloads/MidiTest/jquery.js"></script>
+  
+  <script>
+    $(function() {
+      canvas = document.getElementById("game");
+      context = canvas.getContext("2d");
+      scale = 10;
+      width = 4;
+      
+      globalPositions = [
+        [0, 1, 0, 0],
+        [0, 1, 0, 1],
+        [1, 0, 1, 0],
+        [0, 1, 1, 0]
+      ];
+      
+      createCanvas(width, width, scale);
+      drawCanvas(globalPositions, width, width, scale);
+      //drawNextCanvas();
+      setInterval(drawNextCanvas, 1000);
+    });
+    
+    function drawNextCanvas() {
+      globalPositions = iteratePositions(globalPositions, width, width);
+      drawCanvas(globalPositions, width, width, scale);
+    }
+    
+    function iteratePositions(positions, width, height) {
+      
+      newPositions = blankPositions(width);
+      console.log("B");
+      console.log(newPositions);
+      
+      
+      for (x = 0; x < width; x++) {
+        for (y = 0; y < height; y++) {
+          console.log("pos: "+x+","+y+" = "+positions[x][y]);
+          neighbors = getNumNeighbors(positions, x, y);
+          console.log("neighbors: "+neighbors);
+          
+          newPositions[x][y] = 0;
+          // any dead cell with 3 neighbors lives
+          if (positions[x][y] == 0) {
+            if (neighbors == 3) {
+              newPositions[x][y] = 1;
+              console.log("dead to live");
+            } else {
+              newPositions[x][y] = 0;
+              console.log("ded is ded");
+            }
+          } else if (positions[x][y] == 1) {
+            
+            // any live cell with < 2 neighbors dies
+            if (neighbors < 2) {
+              newPositions[x][y] = 0;
+              console.log("live to dead");
+            
+            // any live cell with > 3 neighbors dies
+            } else if (neighbors > 3) {
+              newPositions[x][y] = 0;
+              console.log("live to dead");
+            
+            // any live cell with 2-3 neighbors lives
+            } else {
+              newPositions[x][y] = 1;
+              console.log("live to live");
+            }
+          }
+        }
+      }
+      return newPositions;
+    }
+    
+    function blankPositions(width) {
+      p = new Array(width);
+      for (x = 0; x < width; x++) {
+        p[x] = new Array(width);
+        p[x].fill(0);
+      }
+      return p;
+    }
+    
+    function getNumNeighbors(positions, x, y) {
+      neighbors = 0;
+      // Possible positions are:
+      // (x-1, y)
+      if ((x > 0) && (positions[x-1][y] == 1)) { neighbors++; }
+      // (x-1, y+1)
+      if ((x > 0) && (y < positions.length-1)) { neighbors += positions[x-1][y+1]; }
+      // (x, y+1)
+      if ((y < positions.length-1) && (positions[x][y+1] == 1)) { neighbors++; }
+      // (x+1, y+1)
+      if ((y < positions.length-1) && (x < positions.length-1)) { neighbors += positions[x+1][y+1]; }
+      // (x+1, y)
+      if ((x < positions.length-1) && (positions[x+1][y] == 1)) { neighbors++; }
+      // (x+1, y-1)
+      if ((x < positions.length-1) && (y > 0)) { neighbors += positions[x+1][y-1]; }
+      // (x, y-1)
+      if ((y > 0) && (positions[x][y-1] == 1)) { neighbors++; }
+      // (x-1, y-1)
+      if ((y > 0) && (x >0)) { neighbors += positions[x-1][y-1]; }
+      
+      return neighbors;
+    }
+    
+    function createCanvas(width, height, scale) {
+      canvas.width = width*scale;
+      canvas.height = height*scale;
+    }
+    
+    function drawCanvas(positions, width, height, scale) {
+      x = 0;
+      y = 0;
+      clearCanvas();
+      console.log("Draw");
+      console.log(positions);
+      for (x = 0; x < positions.length; x++) {
+        for (y = 0; y < positions[x].length; y++) {
+          console.log("Check "+x+","+y);
+          if (positions[x][y] == 1) {
+            context.fillRect(x*scale, y*scale, scale, scale);
+          }
+        }
+      }
+    }
+    
+    function clearCanvas() {
+      canvas.height = canvas.height;
+    }
+    
+  </script>
+  <style>
+  
+  </style>
+  </head>
+  <body>
+    <div id="canvas">
+      <canvas id="game" width="0" height="0"></canvas>
+    </div>
+  </body>
+  
+</html>
