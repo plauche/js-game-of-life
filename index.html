@@ -9,35 +9,36 @@
       canvas = document.getElementById("game");
       context = canvas.getContext("2d");
       scale = 10;
-      width = 4;
+      width = 50;
       
       globalPositions = [
-        [0, 1, 0, 0],
-        [0, 1, 0, 1],
-        [1, 0, 1, 0],
-        [0, 1, 1, 0]
+        [0, 1, 1, 1, 0],
+        [0, 1, 0, 1, 0],
+        [0, 1, 1, 1, 0],
+        [0, 1, 1, 0, 0],
+        [0, 1, 0, 1, 0],
       ];
       
-      createCanvas(width, width, scale);
-      drawCanvas(globalPositions, width, width, scale);
+      createCanvas(width, scale);
+      drawCanvas(globalPositions, width, scale);
       //drawNextCanvas();
-      setInterval(drawNextCanvas, 1000);
+      //setInterval(drawNextCanvas, 1000);
     });
     
     function drawNextCanvas() {
-      globalPositions = iteratePositions(globalPositions, width, width);
-      drawCanvas(globalPositions, width, width, scale);
+      globalPositions = iteratePositions(globalPositions, width);
+      drawCanvas(globalPositions, width, scale);
     }
     
-    function iteratePositions(positions, width, height) {
+    function iteratePositions(positions, width) {
       
       newPositions = blankPositions(width);
       console.log("B");
       console.log(newPositions);
       
       
-      for (x = 0; x < width; x++) {
-        for (y = 0; y < height; y++) {
+      for (x = 0; x < positions.length; x++) {
+        for (y = 0; y < positions.length; y++) {
           console.log("pos: "+x+","+y+" = "+positions[x][y]);
           neighbors = getNumNeighbors(positions, x, y);
           console.log("neighbors: "+neighbors);
@@ -107,12 +108,12 @@
       return neighbors;
     }
     
-    function createCanvas(width, height, scale) {
+    function createCanvas(width, scale) {
       canvas.width = width*scale;
-      canvas.height = height*scale;
+      canvas.height = width*scale;
     }
     
-    function drawCanvas(positions, width, height, scale) {
+    function drawCanvas(positions, width, scale) {
       x = 0;
       y = 0;
       clearCanvas();
@@ -138,7 +139,7 @@
   </style>
   </head>
   <body>
-    <div id="canvas">
+    <div id="canvas" >
       <canvas id="game" width="0" height="0"></canvas>
     </div>
   </body>
